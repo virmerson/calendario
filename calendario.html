@@ -25,6 +25,20 @@
 </div>
 <script>
 $(function() {
+    
+    function dynamicSort(property) {
+        var sortOrder = 1;
+        if(property[0] === "-") {
+            sortOrder = -1;
+            property = property.substr(1);
+        }
+        return function (a,b) {
+            var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+            return result * sortOrder;
+        }
+    }
+    
+    
     $("#scheduler").kendoScheduler({
         date: new Date("2013/6/13"),
         startTime: new Date("2013/6/13 07:00 AM"),
@@ -97,7 +111,8 @@ $(function() {
                 dataSource: [
                     { text: "Alex", value: 1, color: "#f8a398" },
                     { text: "Bob", value: 2, color: "#51a0ed" },
-                    { text: "Charlie", value: 3, color: "#56ca85" }
+                    { text: "Charlie", value: 3, color: "#56ca85" },
+                     { text: "Jão", value: 4, color: "yellow" }
                 ]
             }
         ]
@@ -109,7 +124,11 @@ $(function() {
         });
 
         var scheduler = $("#scheduler").data("kendoScheduler");
-
+        
+        var data = scheduler.dataSource._data;
+        
+        data.sort(dynamicSort("ownerId"));
+        
         scheduler.dataSource.filter({
             operator: function(task) {
                 return $.inArray(task.ownerId, checked) >= 0;
