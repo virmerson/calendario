@@ -111,13 +111,28 @@ $(function() {
                 dataSource: [
                     { text: "Alex", value: 1, color: "#f8a398" },
                     { text: "Bob", value: 2, color: "#51a0ed" },
-                    { text: "Charlie", value: 3, color: "#56ca85" },
-                     { text: "Jão", value: 4, color: "yellow" }
+                    { text: "Charlie", value: 3, color: "#56ca85" }
+                   
                 ]
             }
-        ]
+        ],
+        save: function(e) {
+            
+                console.log("Clicou no Salvar", e.event.title);
+                //Ordenação manual
+                var scheduler = $("#scheduler").data("kendoScheduler");
+        
+                var data = scheduler.dataSource._data;
+       
+                //Ordenação manual
+                data.sort(dynamicSort("ownerId"));
+        }
+        
+    
     });
 
+    
+  
     $("#people :checkbox").change(function(e) {
         var checked = $.map($("#people :checked"), function(checkbox) {
             return parseInt($(checkbox).val());
@@ -126,7 +141,8 @@ $(function() {
         var scheduler = $("#scheduler").data("kendoScheduler");
         
         var data = scheduler.dataSource._data;
-        
+       
+        //Ordenação manual
         data.sort(dynamicSort("ownerId"));
         
         scheduler.dataSource.filter({
