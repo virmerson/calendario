@@ -1,0 +1,20 @@
+{
+  "name": "crudbasico",
+  "description": "",
+  "main": "index.js",
+  "authors": [
+    "virmerson <virmerson@hightechcursos.com.br>"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/virmerson/calendario",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "fetch": "^1.0.0"
+  }
+}
