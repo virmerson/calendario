@@ -2,7 +2,7 @@ const express = require('express'); //importa
 const bodyParser = require ('body-parser');
 const app= express(); //instancia
 const MongoClient = require('mongodb').MongoClient;
-
+var ObjectId = require('mongodb').ObjectID;
 
 //Sets
 app.set('view engine', 'ejs');
@@ -35,28 +35,25 @@ app.use(bodyParser.urlencoded({extend:true}));
 //ES6
 //GET - localhost:3000/
 app.get('/',  (req, res)=>{
-    
-    var cursor = db.collection('quotes').find().toArray(function (err,result){
-        if(err) return console.log(err);
-            res.render('index', {quotes:result});
-         // res.send(result);
-        
-    });
-    
-  
-    
-    //console.log(__dirname);
-    //res.sendFile(__dirname+ '/index.html');
+    res.render('index');
 });
 
+
+app.get('/quotes',  (req, res)=>{
+    
+     var cursor = db.collection('quotes').find().toArray(function (err,result){
+        if(err) return console.log(err);
+       
+        res.send(result);
+    });
+
+});
 
 //POST - localhost:3000/quotes
 app.post('/quotes', (req, res) => {
  db.collection('quotes').save(req.body, (err, result) => {
     if (err) return console.log(err)
-
-    console.log('saved to database')
-    res.redirect('/')
+         res.send(req.body);
     });
 });
 
@@ -85,12 +82,16 @@ app.put('/quotes', (req, res) => {
 })
 
 
-app.delete('/quotes', (req, res) => {
-  db.collection('quotes').findOneAndDelete({name: req.body.name}, 
-  (err, result) => {
-    if (err) return res.send(500, err)
-    res.send('A darth vadar quote got deleted')
-  })
+app.delete('/quotes/:id', (req, res) => {
+   
+    db.collection('quotes').remove({"_id": ObjectId(req.params.id)}
+       
+        , function (err, result) {
+            if (err) 
+                return res.send(500, err)
+            res.send('A darth vadar quote got deleted')
+    });
+    
 })
 
 
