@@ -1,9 +1,10 @@
-var appCrud =  angular.module('appCrud', []);
+var appCrud =  angular.module('appCrud', ['kendo.directives']);
 
 appCrud.controller('indexController', function($scope, $http){ 
 
-    $scope.quoteList = [];
+  
     $scope.quote ={};
+     
     
     $scope.update=function (){
         $http.put('quotes', {
@@ -19,7 +20,10 @@ appCrud.controller('indexController', function($scope, $http){
     $scope.save=function (){
       //Data Bind  
       $http.post('quotes', $scope.quote).then(res => {
-               $scope.quoteList.push(res.data);
+            
+          var dataSource = $('#grid').data('kendoGrid').dataSource;
+          dataSource.add(res.data);
+        
       }).then(res => {
             console.log(res)
          })
@@ -40,56 +44,29 @@ appCrud.controller('indexController', function($scope, $http){
     }
     
    findAllQuotes=function (){
-        $http.get("quotes").then(res=> {
-            $scope.quoteList = res.data 
-        }).then (data=> {
-            console.log(data);
-        });
+            $scope.gridOptions={
+        
+                dataSource: {
+                    type: "json",
+                    transport: {
+                        read: "quotes"
+                    }
+                },
+                columns: [{
+                    field: "name",
+                    title: "Name",
+                    width: "120px"
+                    },{
+                    field: "quote",
+                    title: "Quote",
+                    width: "120px"
+                    }
+                ]
+        
+        };
+    
     };
     
     findAllQuotes();
 });
 
-
-/* var update = document.getElementById('update')
-
-
-update.addEventListener('click', function () {
-  
-    fetch('quotes', {
-      method: 'put',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        'name': 'Darth Vader',
-        'quote': 'I find your lack of faith disturbing.'
-      })
-    }).then(res => {
-        if (res.ok) return res.json()
-    }).then(data => {
-        console.log(data)
-        window.location.reload(true)
-    })
-    
-})
-
-
-var del = document.getElementById('delete')
-
-del.addEventListener('click', function () {
-  fetch('quotes', {
-    method: 'delete',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      'name': 'Darth Vader'
-    })
-  })
-  .then(res => {
-    if (res.ok) return res.text()
-  }).
-  then(data => {
-    console.log(data)
-    window.location.reload()
-  })
-})*/

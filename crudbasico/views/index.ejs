@@ -3,34 +3,47 @@
 <head>
   <meta charset="UTF-8">
   <title>MY APP</title>
+    
+<link rel="stylesheet" href="bower_components/kendoui/styles/kendo.common.min.css"/>
+<link rel="stylesheet" href="bower_components/kendoui/styles/kendo.rtl.min.css"/>
+<link rel="stylesheet" href="bower_components/kendoui/styles/kendo.silver.min.css"/>
+<link rel="stylesheet" href="bower_components/kendoui/styles/kendo.mobile.all.min.css"/>
+    
+    
 </head>
 <body ng-controller="indexController">
   May Node and Express be with you.
 
-  <ul class="quotes" >
+<!-- 
+    <ul class="quotes" >
     <li ng-repeat="q in quoteList">
       {{q.name}}  - {{q.quote}}  
         <button id="delete" ng-click="delete(q)"> Delete</button>
       </li>
   </ul>
-
+-->
+    <kendo-grid id="grid" options="gridOptions"></kendo-grid>
+    
+    
 <div>
   <h2>Replace last quote written by Master Yoda with a quote written by Darth Vadar</h2>
   <button id="update" ng-click="update()"> Darth Vadar invades! </button>
 </div>
   
     
-    
-  <form >
+<form >
     <input type="text" ng-model="quote.name" placeholder="name" name="name">
     <input type="text" ng-model="quote.quote" placeholder="quote" name="quote">
     <button ng-click="save()">Save</button>
-  </form>
+</form>
     
 
-<script src="bower_components/angular/angular.js"></script>
+
+<script src="bower_components/kendoui/js/jquery.min.js"></script>
+<script src="bower_components/kendoui/js/angular.min.js"></script>
+<script src="bower_components/kendoui/js/kendo.all.min.js"></script>
 <script src="main.js"></script>
-<!--<script src="bower_components/fetch/fetch.js"></script>-->
+
 
 </body>
 </html>
