@@ -22,7 +22,11 @@
       </li>
   </ul>
 -->
-    <kendo-grid id="grid" options="gridOptions" ng-delay="gridOptions"></kendo-grid>
+    
+<kendo-grid id="grid" options="gridOptions" ng-delay="gridOptions" rebind="gridOptions.selectable"
+    on-change="handleChange(data, dataItem, columns)">
+
+</kendo-grid>
     
     
 <div>
@@ -32,6 +36,7 @@
   
     
 <form >
+     <input type="text" ng-model="quote._id" placeholder="id" name="_id">
     <input type="text" ng-model="quote.name" placeholder="name" name="name">
     <input type="text" ng-model="quote.quote" placeholder="quote" name="quote">
     <button ng-click="save()">Save</button>
