@@ -2,9 +2,18 @@ var appCrud =  angular.module('appCrud', ['kendo.directives']);
 
 appCrud.controller('indexController', function($scope, $http){ 
 
-   var dataSource ;
+  
     $scope.quote ={};
      
+    var dataSource =  new  kendo.data.DataSource({
+                    type: "json",
+                    transport: {
+                        read: "quotes"
+                    }
+                   
+                });
+    
+    
     
     $scope.update=function (){
         $http.put('quotes', {
@@ -20,7 +29,7 @@ appCrud.controller('indexController', function($scope, $http){
     $scope.save=function (){
       //Data Bind  
       $http.post('quotes', $scope.quote).then(res => {
-            
+       
           dataSource.add(res.data);
         
       }).then(res => {
@@ -41,20 +50,13 @@ appCrud.controller('indexController', function($scope, $http){
       })
      
     }
-   
-   
     
-    function findAllQuotes(){
+  
+     
+    $scope.gridOptions={
         
-         $http({ method: "GET", url: "quotes" })
-                .success(function(result){
-                     dataSource = new kendo.data.DataSource({
-                        data: new kendo.data.ObservableArray(result)
-                    });
-                
-            $scope.gridOptions = {
-              dataSource: dataSource,
-              columns: [{
+                dataSource: dataSource,
+                columns: [{
                     field: "name",
                     title: "Name",
                     width: "120px"
@@ -64,13 +66,8 @@ appCrud.controller('indexController', function($scope, $http){
                     width: "120px"
                     }
                 ]
-            
-            };
-          });
         
-    }
-    
-    findAllQuotes();
+    };
     
 
     
