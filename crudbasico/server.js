@@ -54,14 +54,14 @@ app.post('/quotes', (req, res) => {
  db.collection('quotes').save(req.body, (err, result) => {
     if (err) return console.log(err)
          res.send(req.body);
+        console.log("A new register got created." + req.body);
     });
 });
 
 app.put('/quotes', (req, res) => {
-  db.collection('quotes')
-  .findOneAndUpdate(
-    {name: 'Yoda'}, 
-
+ 
+ db.collection('quotes')
+    .findOneAndUpdate({'_id':ObjectId(req.body._id)},
     {
         $set: {
           name: req.body.name,
@@ -70,15 +70,15 @@ app.put('/quotes', (req, res) => {
     }, 
     {
         sort: {_id: -1},
-        upsert: true
-    },
-    
-    (err, result) => {
+        returnOriginal:false
+    }
+    , (err, result) => {
         if (err) 
             return res.send(err)
-        console.log(result)
-        res.send(result)
+        console.log("A register got updated." + result)
+        res.send(result.value)
     })
+    
 })
 
 
@@ -89,12 +89,10 @@ app.delete('/quotes/:id', (req, res) => {
         , function (err, result) {
             if (err) 
                 return res.send(500, err)
-            res.send('A darth vadar quote got deleted')
+            console.log('A register got deleted')
+             res.send(result)
     });
     
 })
-
-
-
 
 console.log("May Node be with you!");
