@@ -51,7 +51,7 @@ app.get('/quotes',  (req, res)=>{
 
 //POST - localhost:3000/quotes
 app.post('/quotes', (req, res) => {
-delete req.body.id;
+delete req.body._id;
  db.collection('quotes').save(req.body, (err, result) => {
     if (err) return console.log(err)
          res.send(req.body);
