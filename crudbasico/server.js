@@ -1,18 +1,13 @@
 const express = require('express'); //importa
 const bodyParser = require ('body-parser');
 const app= express(); //instancia
-const MongoClient = require('mongodb').MongoClient;
-var ObjectId = require('mongodb').ObjectID;
 
-//Sets
-app.set('view engine', 'ejs');
-app.use(express.static('public'));
-//Ler requests em Json
-app.use(bodyParser.json());
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://crud-virmerson:mongo2016@ds019996.mlab.com:19996/crud-virmerson');
 
-var db;
-
-MongoClient.connect('mongodb://crud-virmerson:mongo2016@ds019996.mlab.com:19996/crud-virmerson', (err, database) => {
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', (err, database) => {
   
     if (err) return console.log(err);
         
@@ -26,6 +21,22 @@ MongoClient.connect('mongodb://crud-virmerson:mongo2016@ds019996.mlab.com:19996/
     
 });
 
+// Schema  Definitions
+var Schema=mongoose.Schema;
+
+var clientSchema=new Schema({
+    name:String,
+    email:String
+});
+
+var Client = mongoose.model('Client', clientSchema);
+
+
+//Sets
+app.set('view engine', 'ejs');
+app.use(express.static('public'));
+//Ler requests em Json
+app.use(bodyParser.json());
 
 
 //Plugando o Body Parser ao Express com um middleware (mediador)
@@ -39,9 +50,10 @@ app.get('/',  (req, res)=>{
 });
 
 
-app.get('/quotes',  (req, res)=>{
+
+app.get('/clients', (req, res)=>{
     
-     var cursor = db.collection('quotes').find().toArray(function (err,result){
+    mongoose.model('Client').find(function (err,result){
         if(err) return console.log(err);
        
         res.send(result);
@@ -49,44 +61,45 @@ app.get('/quotes',  (req, res)=>{
 
 });
 
-//POST - localhost:3000/quotes
-app.post('/quotes', (req, res) => {
-delete req.body._id;
- db.collection('quotes').save(req.body, (err, result) => {
+app.get ('/clients/:id', (req,res)=>{
+         
+         mongoose.model('Client').find({_id:req.params.id}, function (err,result){
+            res.send(result);
+        });
+});
+
+
+
+//POST - localhost:3000/clients
+app.post('/clients', (req, res) => {
+  var cli=  new Client(req.body)
+  cli.save(function (err, result){
+      console.log("A new register got created." + req.body)
+      res.send(result)  
+  })
+   
+//delete req.body._id; //Workaround
+/*  db.collection('clients').save(req.body, (err, result) => {
     if (err) return console.log(err)
          res.send(req.body);
         console.log("A new register got created." + req.body);
-    });
+    }); */
 });
 
-app.put('/quotes', (req, res) => {
+app.put('/clients', (req, res) => {
  
- db.collection('quotes')
-    .findOneAndUpdate({'_id':ObjectId(req.body._id)},
-    {
-        $set: {
-          name: req.body.name,
-          quote: req.body.quote
-        }
-    }, 
-    {
-        
-        sort: {_id: -1},
-        returnOriginal:false
-    }
-    , (err, result) => {
-        if (err) 
-            return res.send(err)
-        console.log("A register got updated." + result)
-        res.send(result.value)
+    var cli=  new Client(req.body)
+    cli.update(function (err, result){
+      console.log("A new register got created." + req.body)
+      res.send(result)  
     })
+
     
-})
+});
 
-
-app.delete('/quotes/:id', (req, res) => {
+app.delete('/clients/:id', (req, res) => {
    
-    db.collection('quotes').remove({"_id": ObjectId(req.params.id)}
+    /*   db.collection('clients').remove({"_id": ObjectId(req.params.id)}
        
         , function (err, result) {
             if (err) 
@@ -94,6 +107,7 @@ app.delete('/quotes/:id', (req, res) => {
             console.log('A register got deleted')
              res.send(result)
     });
+    */
     
 })
 
